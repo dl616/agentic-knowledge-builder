@@ -1,5 +1,10 @@
 # Agentic Knowledge Builder
 
+[![CI](https://github.com/dl616/agentic-knowledge-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/dl616/agentic-knowledge-builder/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
 > 多 Agent 协作、查存混合的企业级知识库构建平台。
 > 丢一堆杂乱文档进来，一个总控 Agent 调度五个专项 Agent，自动构建出「能查、能问、答案有出处、知识越用越厚」的知识库。
 
@@ -87,7 +92,14 @@ docs/                # PRD（做什么）+ DEVELOPMENT（怎么做）
 
 - [`docs/PRD.md`](docs/PRD.md) — 产品需求与定位（做什么）
 - [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) — 开发架构与规范（怎么做）
+- [`docs/MASTER_PLAN.md`](docs/MASTER_PLAN.md) — 最终开发方案总纲
 - [`docs/REVIEW.md`](docs/REVIEW.md) — 全面审查报告
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — 贡献指南
+- [`CHANGELOG.md`](CHANGELOG.md) — 变更日志
+
+## 许可
+
+[MIT](LICENSE)
 
 ---
 

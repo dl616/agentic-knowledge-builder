@@ -1,0 +1,36 @@
+name: Bug Report
+description: 报告一个 bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 清晰描述这个 bug 是什么、期望行为是什么、实际行为是什么。
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 如何触发这个 bug，尽量给出最小可复现的代码或输入文件。
+      placeholder: |
+        1. 运行 `uv run python scripts/ingest.py xxx.pdf`
+        2. 观察输出 ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 环境
+      description: Python 版本、操作系统、依赖版本（`uv run python -V`、`uv run pip list`）。
+      placeholder: "Python 3.13.12, macOS, pymupdf 1.28.2"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志/报错
+      description: 粘贴相关报错或日志。
+      render: shell
