@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# 环境与密钥
+.env
+.env.*
+
+# 运行时数据（原始资料 + 沉淀知识）
+data/
+
+# 测试与工具缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# 构建产物
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
