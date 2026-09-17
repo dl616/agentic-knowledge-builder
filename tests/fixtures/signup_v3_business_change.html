@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>用户注册</title>
+</head>
+<body>
+  <h1>用户注册</h1>
+
+  <!--
+    v3 业务变更页：页面结构与 v1 **完全一致**（label、id、控件一个没动），
+    只改了业务流程 —— 注册后不再直接成功，而是进入「待激活」状态。
+
+    这是与 v2 完全不同类型的变化：
+      · v2 是**技术性变化**：控件变了，功能没变 → 该自愈，不惊动人
+      · v3 是**业务性变化**：控件没变，功能变了 → 该报警给人
+
+    拿 v1 的用例跑这个页面：所有步骤（填值、勾选、点击）都会执行成功，
+    但断言「注册成功」不成立 —— 这正是「业务变更」的判定特征。
+
+    如果系统把它误判成「元素失效」去自动修复，就是**漏测**：
+    一个真实的业务变更被当成了脚本问题。所以这个 fixture 是归因正确性的验收基准。
+  -->
+  <form id="signup-form">
+    <div>
+      <label for="phone">手机号</label>
+      <input id="phone" name="phone" type="tel" placeholder="请输入手机号" required>
+    </div>
+
+    <div>
+      <label for="code">验证码</label>
+      <input id="code" name="code" type="text" placeholder="请输入验证码" required>
+      <button type="button" id="send-code">获取验证码</button>
+    </div>
+
+    <div>
+      <label for="password">密码</label>
+      <input id="password" name="password" type="password" placeholder="请设置密码" required>
+    </div>
+
+    <div>
+      <input id="agree" name="agree" type="checkbox" required>
+      <label for="agree">我已阅读并同意《用户协议》</label>
+    </div>
+
+    <button type="submit" id="submit">注册</button>
+  </form>
+
+  <div id="message" role="alert"></div>
+
+  <script>
+    var message = document.getElementById('message');
+
+    document.getElementById('send-code').addEventListener('click', function () {
+      message.textContent = '验证码已发送';
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var phone = document.getElementById('phone').value;
+      var code = document.getElementById('code').value;
+      var password = document.getElementById('password').value;
+      var agree = document.getElementById('agree').checked;
+
+      if (!/^1\d{10}$/.test(phone)) {
+        message.textContent = '手机号格式不正确';
+        return;
+      }
+      if (code.length !== 6) {
+        message.textContent = '验证码应为 6 位';
+        return;
+      }
+      if (password.length < 8) {
+        message.textContent = '密码至少 8 位';
+        return;
+      }
+      if (!agree) {
+        message.textContent = '请先阅读并同意用户协议';
+        return;
+      }
+      // ↓↓↓ 唯一的变更点：注册后进入待激活流程，不再直接成功 ↓↓↓
+      message.textContent = '注册申请已提交，请查收激活邮件';
+    });
+  </script>
+</body>
+</html>

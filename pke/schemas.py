@@ -26,7 +26,7 @@ from uuid import uuid4
 SCHEMA_VERSION = 1
 
 # 摄取来源类型（对应 agents/ingest/ 下每个解析器）
-SOURCE_TYPES = ("pdf", "web", "image", "code", "text")
+SOURCE_TYPES = ("pdf", "web", "image", "code", "text", "test")
 
 
 @dataclass

@@ -50,7 +50,14 @@ class RagKnowledgeBase:
         self._bm25: BM25Plus | None = None
 
     def add(self, document: Document) -> int:
-        """把一份 Document 的 chunks 加入索引，返回新增 chunk 数。"""
+        """把一份 Document 的 chunks 加入索引，返回新增 chunk 数。
+
+        真实边界坑：BM25Plus 在空语料上会除零崩溃（rank_bm25 内部
+        avgdl = num_doc / corpus_size），空文档（质检不通过、无 chunk）
+        必须提前跳过，不能假装建了索引。
+        """
+        if not document.chunks:
+            return 0
         self._chunks.extend(document.chunks)
         tokenized = [tokenize(c.text) for c in self._chunks]
         self._bm25 = BM25Plus(tokenized)

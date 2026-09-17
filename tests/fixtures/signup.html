@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>用户注册</title>
+</head>
+<body>
+  <h1>用户注册</h1>
+
+  <!--
+    测试夹具（fixture）：已知内容的注册页，共 6 个控件。
+    单测用「已知内容样本断言法」——因为我们事先知道这里有 6 个控件、
+    分别是什么类型，所以可以精确断言 Explorer 抓到了几个、归对了类没有，
+    而不是靠肉眼看输出。
+
+    控件清单（断言基准）：
+      1. 手机号       textbox   label=手机号
+      2. 验证码       textbox   label=验证码
+      3. 获取验证码   button    text=获取验证码
+      4. 密码         password  label=密码
+      5. 协议勾选     checkbox  label=我已阅读并同意《用户协议》
+      6. 注册         button    text=注册
+  -->
+  <form id="signup-form">
+    <div>
+      <label for="phone">手机号</label>
+      <input id="phone" name="phone" type="tel" placeholder="请输入手机号" required>
+    </div>
+
+    <div>
+      <label for="code">验证码</label>
+      <input id="code" name="code" type="text" placeholder="请输入验证码" required>
+      <button type="button" id="send-code">获取验证码</button>
+    </div>
+
+    <div>
+      <label for="password">密码</label>
+      <input id="password" name="password" type="password" placeholder="请设置密码" required>
+    </div>
+
+    <div>
+      <input id="agree" name="agree" type="checkbox" required>
+      <label for="agree">我已阅读并同意《用户协议》</label>
+    </div>
+
+    <button type="submit" id="submit">注册</button>
+  </form>
+
+  <!-- 提示区：带 role=alert，方便断言「操作后页面发生了什么」 -->
+  <div id="message" role="alert"></div>
+
+  <script>
+    // 极简前端逻辑，只为让 Explorer 能观测到「操作 → 页面变化」的轨迹
+    var message = document.getElementById('message');
+
+    document.getElementById('send-code').addEventListener('click', function () {
+      message.textContent = '验证码已发送';
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var phone = document.getElementById('phone').value;
+      var code = document.getElementById('code').value;
+      var password = document.getElementById('password').value;
+      var agree = document.getElementById('agree').checked;
+
+      if (!/^1\d{10}$/.test(phone)) {
+        message.textContent = '手机号格式不正确';
+        return;
+      }
+      if (code.length !== 6) {
+        message.textContent = '验证码应为 6 位';
+        return;
+      }
+      if (password.length < 8) {
+        message.textContent = '密码至少 8 位';
+        return;
+      }
+      if (!agree) {
+        message.textContent = '请先阅读并同意用户协议';
+        return;
+      }
+      message.textContent = '注册成功';
+    });
+  </script>
+</body>
+</html>

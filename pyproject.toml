@@ -1,7 +1,7 @@
 [project]
 name = "agentic-knowledge-builder"
 version = "0.1.0"
-description = "多 Agent 协作、查存混合的企业级知识库构建平台"
+description = "基于 LLM 的智能测试设计与知识工程系统"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -10,6 +10,14 @@ dependencies = [
     "trafilatura>=1.8.0",
     "rank-bm25>=0.2.2",
     "jieba>=0.42.1",
+    "playwright>=1.40",
+]
+
+# 编排层（pke/testing/graph.py）的可选依赖：
+# 装了走 LangGraph 状态图，没装自动降级成同样的线性执行，主线不停工。
+[project.optional-dependencies]
+graph = [
+    "langgraph>=0.2",
 ]
 
 [dependency-groups]
@@ -37,6 +45,9 @@ select = ["E", "F", "I", "N", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "integration: 需要外部资源的测试（浏览器内核等），缺失时自动跳过",
+]
 
 [tool.coverage.run]
 source = ["pke"]
@@ -45,3 +56,16 @@ branch = true
 [tool.coverage.report]
 fail_under = 85
 show_missing = true
+
+# 类型检查：只查本项目代码。
+# langgraph / pydantic 是可选依赖，且 pydantic 2.13 + mypy 2.3 组合会触发 mypy 内部错误
+# （崩在 site-packages/pydantic/types.py）。让 mypy 跳过这两个包的源码，
+# 既不误伤主线类型检查，也不把外部包的问题算到我们头上。
+[tool.mypy]
+files = ["pke"]
+
+[[tool.mypy.overrides]]
+module = ["langgraph.*", "pydantic.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+ignore_missing_imports = true

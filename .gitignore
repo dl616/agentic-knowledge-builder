@@ -6,9 +6,10 @@ __pycache__/
 .venv/
 venv/
 
-# 环境与密钥
+# 环境与密钥（.env 存真实密钥，绝不入库；模板文件例外）
 .env
 .env.*
+!.env.example
 
 # 运行时数据（原始资料 + 沉淀知识）
 data/
@@ -30,3 +31,6 @@ build/
 .idea/
 .vscode/
 .DS_Store
+
+# 本地运行期产物（演示知识库、临时目录、jieba 缓存）
+.cache/
