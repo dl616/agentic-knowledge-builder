@@ -152,10 +152,36 @@ uv run ruff check pke scripts tests && uv run mypy pke
 
 ---
 
+## 实测数据（v0.2.0，真实无头 Chromium）
+
+三轮端到端，跑的是上面三个 fixture：
+
+| 轮次 | 场景 | 结果 |
+|---|---|---|
+| v1 | 基线注册页，冷启动 | **10/10 通过** |
+| v2 | 去掉 label 的改版页，复用 v1 沉淀的 5 条历史用例 | **10/10 通过**，3 处语义重绑（phone「手机号」→「请输入手机号」、code、password） |
+| v3 | 成功文案变更页 | **8/10**，2 条判「业务变更」挂人工（归因：未出现「注册成功」，实际为「注册申请已提交，请查收激活邮件」） |
+
+也就是说：改版后历史用例**没有一条重写**，靠语义槽位自动重绑；真·业务变更被准确挑出来交给人判断，而不是伪装成脚本报错。
+
+质量门禁：`ruff` ✅ / `mypy` 0 issue ✅ / `pytest` **212 项全绿** ✅（含真实浏览器集成）
+
+---
+
+## 当前状态
+
+- **v0.2.0 已发布**（含 tag），变更见 [`CHANGELOG.md`](CHANGELOG.md)。
+- **唯一硬阻塞**：LLM 真实调用。内部 knot 平台走 iOA/TOF 登录网关，Bearer 穿不透。
+  因此当前全部能力走**规则模板 + 可插拔接口**——这是有意为之的设计决策，不是半成品：
+  配好任意 LLM 通道（`pke/llm.py`）后，用例生成与归因自动升级为智能模式，主线流程无需改动。
+
+---
+
 ## 文档
 
-- [`docs/PROJECT-NARRATIVE.md`](docs/PROJECT-NARRATIVE.md) — 项目讲述（面试/汇报口径，含全流程口述脚本）
-- [`docs/IMPLEMENTATION-PLAN.md`](docs/IMPLEMENTATION-PLAN.md) — 落地计划任务表与代码对照
+- [`CHANGELOG.md`](CHANGELOG.md) — 版本变更
+- [`docs/PROJECT-NARRATIVE.md`](docs/PROJECT-NARRATIVE.md) — 项目讲述（面试/汇报口径，含全流程口述脚本与实测数据）
+- [`docs/IMPLEMENTATION-PLAN.md`](docs/IMPLEMENTATION-PLAN.md) — 落地计划任务表与代码对照（S0–S7 全完成）
 - [`docs/POSITIONING-V3.md`](docs/POSITIONING-V3.md) — 定位调研
 - [`docs/PRD.md`](docs/PRD.md) — 产品需求与定位
 - [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) — 开发架构与规范

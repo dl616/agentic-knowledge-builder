@@ -24,6 +24,9 @@
 - 验证样本：`signup.html` / `signup_v2_relayout.html`（改版）/ `signup_v3_business_change.html`（业务变更）。
 - 文档：`docs/PROJECT-NARRATIVE.md`（项目讲述 + 实测数据）、`docs/IMPLEMENTATION-PLAN.md`（落地任务表）。
 
+### Changed
+- 文档对齐 v0.2.0：README 新增「实测数据（三轮端到端）」与「当前状态」；IMPLEMENTATION-PLAN 进度全标记完成并补验收结果。
+
 ### Fixed
 - 控件命名在「无 label」改版页退化为 `on`（补充相邻文本识别，且只对勾选框/单选框生效，避免误取整个表单文本）。
 - 历史用例跨版本复用失效（用例 ID 绑字面名 → 改版即断）：改为绑语义槽位，召回时重绑并留痕。

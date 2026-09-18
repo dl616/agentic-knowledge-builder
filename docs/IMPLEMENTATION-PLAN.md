@@ -1,8 +1,11 @@
 # 落地计划任务表：从「知识库系统」到「智能测试设计系统」
 
 > **背景**：项目已重新定位为「基于 LLM（大语言模型）的智能测试设计与知识工程系统」，
-> 但仓库代码仍是「多 Agent（智能体）知识构建平台」——测试领域的那一整层尚未落地。
-> 本表把「简历上写了但代码里没有」的部分拆成可执行、可验收的任务。
+> 彼时仓库代码仍是「多 Agent（智能体）知识构建平台」——测试领域的那一整层尚未落地，
+> 本表把「文档上写了但代码里没有」的部分拆成可执行、可验收的任务。
+>
+> **现状（v0.2.0）**：S0–S7 **全部完成**并已发布，测试域整层已落地，`pke/testing/` 共 10 个模块。
+> 本表保留作为**落地过程记录 + 简历口径 ↔ 代码对照表**，不再代表未完成项。
 
 ---
 
@@ -19,18 +22,20 @@
 | 数据契约 Document / Chunk | `pke/schemas.py` | ✅ 可扩展 |
 | 摄取 / 质检 / 索引 / 检索 / 问答 五 Agent | `pke/agents/` | ✅ 已跑通 |
 
-### 未落实（本次要做的）
+### 曾未落实 → 现已落地
 
-| 缺口 | 简历/文档口径 | 代码现状 |
+| 缺口 | 文档口径 | 落地位置 |
 |---|---|---|
-| LangGraph（图编排框架）编排 | 「基于 LangGraph 编排四角色」 | ❌ 未集成（`grep langgraph` = 0） |
-| Playwright（浏览器自动化框架） | 「采集 DOM / Accessibility Tree」 | ❌ 零依赖零代码 |
-| Explorer（探索器） | 浏览器探索采集 | ❌ 不存在 |
-| Analyzer（分析器） | 构建 PageModel（页面对象模型） | ❌ 不存在 |
-| CaseGenerator（用例生成器） | 生成结构化用例 | ❌ 不存在 |
-| FailureAnalyzer（失败归因器） | 区分元素失效 / 业务变更 | ❌ 不存在 |
-| 测试资产 Schema（结构化定义） | PageModel / 业务动作 / 测试模式 | ❌ 不存在 |
-| 用例执行器 | Playwright 跑用例 | ❌ 不存在 |
+| LangGraph（图编排框架）编排 | 「基于 LangGraph 编排四角色」 | ✅ `pke/testing/graph.py`（含无图线性降级） |
+| Playwright（浏览器自动化框架） | 「采集 DOM / Accessibility Tree」 | ✅ `pke/testing/explorer.py` |
+| Explorer（探索器） | 浏览器探索采集 | ✅ `pke/testing/explorer.py` |
+| Analyzer（分析器） | 构建 PageModel（页面对象模型） | ✅ `pke/testing/analyzer.py` |
+| CaseGenerator（用例生成器） | 生成结构化用例 | ✅ `pke/testing/generator.py` |
+| FailureAnalyzer（失败归因器） | 区分元素失效 / 业务变更 | ✅ `pke/testing/failure.py` |
+| 测试资产 Schema（结构化定义） | PageModel / 业务动作 / 测试模式 | ✅ `pke/testing/schemas.py` |
+| 用例执行器 | Playwright 跑用例 | ✅ `pke/testing/executor.py`（含定位自愈 + 语义重绑） |
+| 语义槽位（跨版本复用关键） | semantic_id | ✅ `pke/testing/semantics.py` |
+| 测试知识层（沉淀 + 召回 + 重绑） | Compile 热层 + RAG 冷层 | ✅ `pke/testing/knowledge.py` |
 
 ---
 
@@ -142,16 +147,26 @@ LLM（大语言模型）接入是长期硬阻塞（需 API key 或 Ollama）。*
 
 | 阶段 | 内容 | 依赖 LLM | 估时 | 状态 |
 |---|---|---|---|---|
-| S0 | 收口现状 + 依赖 | 否 | 0.5 天 | 🟡 依赖已补，提交待做 |
+| S0 | 收口现状 + 依赖 | 否 | 0.5 天 | ✅ 完成（v0.2.0 已发布 + tag） |
 | S1 | Explorer 探索采集 | 否 | 1 天 | ✅ 完成 |
 | S2 | Analyzer + PageModel | 否 | 1 天 | ✅ 完成 |
 | S3 | CaseGenerator 用例生成 | 可选 | 1.5 天 | ✅ 完成（规则版；LLM 接口已留） |
 | S4 | 执行器 + FailureAnalyzer | 否 | 1.5 天 | ✅ 完成 |
 | S5 | 测试知识层对接 | 否 | 1 天 | ✅ 完成（含跨版本语义重绑） |
 | S6 | LangGraph 编排 | 否 | 1 天 | ✅ 完成（含无图降级） |
-| S7 | 端到端闭环 + demo | 可选 | 1 天 | 🟡 进行中（demo 已通，文档待对齐） |
+| S7 | 端到端闭环 + demo | 可选 | 1 天 | ✅ 完成（三轮 E2E + 文档对齐 + 全绿） |
 
 **合计约 8.5 天**；前 4 个阶段（S0–S4）跑完即有「可演示的最小闭环」，约 4.5 天。
+
+**S7 验收结果（真实无头 Chromium，三轮端到端）**
+
+| 轮次 | 场景 | 结果 |
+|---|---|---|
+| v1 | 基线注册页冷启动 | 10/10 通过 |
+| v2 | 去 label 改版页，复用 v1 沉淀的 5 条历史用例 | 10/10 通过，3 处语义重绑（phone「手机号」→「请输入手机号」、code、password） |
+| v3 | 成功文案变更页 | 8/10，2 条判「业务变更」挂人工 |
+
+门禁：`ruff` ✅ / `mypy` 0 issue ✅ / `pytest` 212 项全绿 ✅
 
 ---
 
@@ -178,7 +193,7 @@ LLM（大语言模型）接入是长期硬阻塞（需 API key 或 Ollama）。*
 
 | 风险 | 影响 | 应对 |
 |---|---|---|
-| LLM 接入未定（API key / Ollama） | 影响 S3 智能生成、S7 演示质量 | 已设计降级路径：规则模板生成，不阻塞 |
+| LLM 接入未定（API key / Ollama） | 影响 S3 智能生成、S7 演示质量 | ✅ 已闭环：knot 网关（iOA/TOF）Bearer 穿不透 → 走规则模板，S3/S7 均验收通过；`pke/llm.py` 留有可插拔接口，换通道即可升级 |
 | Playwright 浏览器内核下载慢/失败 | 阻塞 S1 | 优先用本地 HTML fixture，不依赖外网页面 |
 | 目标站点有反爬/登录墙 | 影响真实页面采集 | 先用本地 fixture 验证，真实站点后补 |
 | 一次铺太大导致返工 | 整体风险 | 严格按 S0→S7 顺序，每阶段验收通过再进下一阶段 |
